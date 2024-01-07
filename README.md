@@ -16,5 +16,3 @@ As we can se from the above screenshot, there are three main tables: _Experiment
 - _MetricData_: Contains all the results metrics of the runned trials of that experiment.
 - _TrialJobEvent_: Contains the paramenters chosen for each trials.
 
-___
-## input and output of the Function 
