@@ -11,15 +11,13 @@ def merge_dicts(dict1, dict2)-> dict:
 
 def nni_query(tiral_sqlite_path, show=True) -> dict:
 
-
-    table_name = 'MetricData'
     # Connect to the SQLite database
     connection = sqlite3.connect(tiral_sqlite_path)
     cursor = connection.cursor()
 
     query = f"""
         SELECT trialjobId, sequence, data
-        FROM {table_name}
+        FROM MetricData
         WHERE trialjobId IN (
             SELECT trialjobId
             FROM MetricData
@@ -38,13 +36,34 @@ def nni_query(tiral_sqlite_path, show=True) -> dict:
 
     # Fetch the results
     results = cursor.fetchall()
-
+    print(results)
     score_dict = {}
     for row in results:
         trialjob_id = row[0]
         sequence = row[1]
-        data = float(row[2].strip('"'))
-
+        print(row[2])
+        if isinstance(row[2].strip('"'), float):
+            data = float(row[2].strip('"'))
+        else:
+            query = f"""
+                    SELECT trialjobId, sequence, CAST(JSON_EXTRACT(data, '$.default') AS REAL) as metrics
+                    FROM MetricData
+                    WHERE trialjobId IN (
+                        SELECT trialjobId
+                        FROM MetricData
+                        WHERE type = 'FINAL'
+                        GROUP BY trialjobId
+                        ORDER BY MAX(CAST(JSON_EXTRACT(data, '$.default') AS REAL)) DESC
+                        LIMIT 5
+                    ) 
+                    AND type = 'PERIODICAL'
+                    ORDER BY trialjobId, sequence;
+                """
+            # Execute the query
+            cursor.execute(query)
+            # Fetch the results
+            results = cursor.fetchall()
+            print(results)
         # If trialjob_id is not already in the dictionary, add it with an empty list
         if trialjob_id not in score_dict:
             score_dict[trialjob_id] = []
