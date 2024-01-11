@@ -7,7 +7,7 @@ def merge_dicts(dict1, dict2)-> dict:
     merged_dict = {}
     for key in dict1.keys():
         merged_dict[key] = [dict1[key], dict2[key]]
-    print(merged_dict)
+    #print(merged_dict)
     return merged_dict
 
 
@@ -38,9 +38,9 @@ def nni_query(tiral_sqlite_path, show=True) -> dict:
 
     # Fetch the results
     results = cursor.fetchall()
-    print(results)
+    #print(results)
     score_dict = {}
-    print(results[0][2])
+    #print(results[0][2])
     if "{" not in results[0][2]:
         
         print("found single Score")
@@ -146,7 +146,7 @@ def nni_query(tiral_sqlite_path, show=True) -> dict:
 
 
     # Fetch the results
-    print(results)
+    #print(results)
     for row in results:
         trialjob_id = row[0]
         sequence = row[1]
@@ -157,7 +157,7 @@ def nni_query(tiral_sqlite_path, show=True) -> dict:
 
         # Append the data to the list, maintaining the order by sequence
         score_dict[trialjob_id].append(row[2])
-    print('score dict', score_dict)
+    #print('score dict', score_dict)
     query2 = f"""
             SELECT trialjobId, data
             FROM TrialJobEvent
