@@ -81,7 +81,7 @@ def nni_query(tiral_sqlite_path, show=True) -> dict:
         cursor.execute(query)
         connection.commit()
     else:
-        print("found multiple metrics")
+        print("found multiple metrics, tracking only default")
         query = f"""
                 UPDATE MetricData
                 SET data = replace(data, '\\"', '"');
